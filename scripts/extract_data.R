@@ -2,7 +2,6 @@
 library(data.table)
 library(dplyr)
 options(warn=-1)
-
 # set wd to selected cut
 setwd("E:/PBIX/NCoronavirus 2020/Stata nCoV reporting/31 Azure Data Model/DART/Data snapshots/sitrep")
 #setwd("E:/PBIX/NCoronavirus 2020/Stata nCoV reporting/31 Azure Data Model/DART/Data snapshots/latest")
@@ -10,7 +9,7 @@ setwd("E:/PBIX/NCoronavirus 2020/Stata nCoV reporting/31 Azure Data Model/DART/D
 a <- fread("labresults.txt",sep=",")
 b <- fread("Persons.txt",sep=",")
 # join dataframes
-c <- merge(x = a, y = b[ , c("RecordID", "TestType", "LGA", "FullCleanAddress", "AddressLine1", "AddressLine2", "StreetName", "Suburb", "State", "Postcode", "RawPostcode", "Latitude", "Longitude")], by = "RecordID", all.x=TRUE)
+c <- merge(x = a, y = b[ , c("RecordID", "LGA", "MetroRural", "FullCleanAddress", "AddressLine1", "AddressLine2", "StreetName", "Suburb", "State", "Postcode", "RawPostcode", "Latitude", "Longitude")], by = "RecordID", all.x=TRUE)
 # check df for NA's
 c %>%
   summarise_all(funs(sum(is.na(.))))
@@ -19,11 +18,13 @@ c %>%
 d <-c %>%
   filter(!is.na(Latitude|Longitude))
 # select columns wanted
-e <- select(d, "TestDate", "RecordID", "TestType", "LGA", "FullCleanAddress", "AddressLine1", "AddressLine2", "StreetName", "Suburb", "State", "Postcode", "RawPostcode", "Latitude", "Longitude")
-# chnage to date format
+e <- select(d, "TestDate", "RecordID", "TestType", "LGA", "MetroRural", "AddressLine1", "AddressLine2", "FullCleanAddress", "StreetName", "Suburb", "State", "Postcode", "RawPostcode", "Latitude", "Longitude")
+# change to date format
 e$TestDate <- as.Date(e$TestDate, '%d/%m/%Y')
-# filter to only include feb 2021 onwards
+# filter date range
 f <- filter(e, TestDate > "2021-01-31")
+#convert column names to lower
+names(f)<-tolower(names(f))
 #export .csv files
 setwd("C:/Users/rjan2103/Documents")
 fwrite(f, "sitrep.csv", sep=",")
