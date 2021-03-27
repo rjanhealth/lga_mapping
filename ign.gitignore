@@ -123,6 +123,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-data/sitrep.csv
-data/sitrep.xlsx
-data/lga_mapped.csv
+
+# Folders
+input.*
+output.*
