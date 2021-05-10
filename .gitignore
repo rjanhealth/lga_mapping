@@ -125,5 +125,5 @@ dmypy.json
 .pyre/
 
 # Folders
-input.*
-output.*
+/input/
+/output/
